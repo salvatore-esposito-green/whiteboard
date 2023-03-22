@@ -1,0 +1,13 @@
+node_modules/
+packages/**/lib
+**/spec/build
+.DS_Store
+
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
