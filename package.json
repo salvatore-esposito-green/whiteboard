@@ -1,0 +1,14 @@
+{
+  "name": "whiteboard",
+  "description": "",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "keywords": [],
+  "scripts": {},
+  "author": "Salvatore Esposito <s.esposito@ideasolutions.it>",
+  "license": "MIT",
+  "devDependencies": {
+  }
+}

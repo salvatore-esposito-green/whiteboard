@@ -1,0 +1,15 @@
+.client__image {
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	margin: auto;
+	position: fixed;
+	display: flex;
+	justify-content: center;
+
+	img {
+		width: auto;
+		height: 100%;
+		align-self: center;
+	}
+}

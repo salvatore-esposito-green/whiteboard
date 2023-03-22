@@ -1,0 +1,11 @@
+version: 2
+authtoken: 2KaQwohmegNBM9bhRYvpOUKZUgi_6gRFHBtyvPsGXFQ2XB1bf
+tunnels:
+  webapp:
+    proto: http
+    hostname: ideasolutions.eu.ngrok.io
+    addr: localhost:8080
+  server:
+    proto: http
+    hostname: ideasolutions-server.eu.ngrok.io
+    addr: localhost:5001

@@ -1,0 +1,30 @@
+{
+	"compilerOptions": {
+		"sourceMap": true,
+		"noImplicitAny": false,
+		"module": "commonjs",
+		"target": "es5",
+		"lib": ["esnext", "dom", "dom.iterable"],
+		"removeComments": true,
+		"allowSyntheticDefaultImports": true,
+		"jsx": "react",
+		"allowJs": true,
+		"baseUrl": "./",
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"moduleResolution": "node",
+		"downlevelIteration": true,
+		"paths": {
+			"@components/*": ["src/components/*"],
+			"@types": ["src/types.ts"]
+		},
+		"types": ["node"],
+		"typeRoots": ["node_modules/@types"],
+		"plugins": [
+			{
+				"name": "typescript-plugin-css-modules"
+			}
+		]
+	},
+	"include": ["./src", "./webpack.config.ts"]
+}
