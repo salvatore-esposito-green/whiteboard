@@ -2,7 +2,8 @@
 	<br>
 	<br>
 	<picture>
-		<source srcset="./assets/image.jpg">
+		<source srcset="https://github.com/salvatore-esposito-green/whiteboard/blob/main/assets/image.jpg?raw=true">
+        <img src="https://github.com/salvatore-esposito-green/whiteboard/blob/main/assets/image.jpg?raw=true" alt="Readme image" />
 	</picture>
 	<br>
 	<br>
