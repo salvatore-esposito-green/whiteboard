@@ -87,6 +87,11 @@ io.on("connection", (socket) => {
 
 		socket.broadcast.emit("canvasImage", imageUrl, userId);
 
+		socket.broadcast.emit("log", {
+			message: `EventName: canvasImage - Payload: ${JSON.stringify(imageUrl)}`,
+			data: Date.now(),
+		});
+
 		if (!imageUrl) return;
 
 		/**
