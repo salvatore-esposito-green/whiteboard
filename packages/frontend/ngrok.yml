@@ -1,5 +1,5 @@
 version: 2
-authtoken: 2KaQwohmegNBM9bhRYvpOUKZUgi_6gRFHBtyvPsGXFQ2XB1bf
+authtoken: <<inserisci il tuo token>>
 tunnels:
   webapp:
     proto: http
