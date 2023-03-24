@@ -1,9 +1,55 @@
 .home__header {
-	background-color: #cfd7d0;
-	top: 0;
-	right: 0;
+	background-color: #ddfee1;
+	padding: 2rem;
+	border-radius: 2rem 0;
+	box-shadow: 10px 5px 20px 0px #cccccc;
+	overflow: hidden;
+	box-sizing: border-box;
+	font-family: "Overpass Mono", monospace;
+
+	h3 {
+		font-weight: bold;
+	}
+}
+
+.State {
+	margin-top: 2rem;
+	background-color: #525252;
+	padding: 2rem;
+	border-radius: 2rem 0;
+	box-shadow: 10px 5px 20px 0px #cccccc;
+	overflow: hidden;
+	box-sizing: border-box;
+	font-family: "Overpass Mono", monospace;
+}
+
+.Container {
+	top: 2rem;
+	right: 2rem;
 	width: 100%;
-	max-width: 33vw;
+	max-width: 25vw;
 	position: fixed;
-	padding: 1rem;
+	z-index: 9999;
+}
+
+.Logger {
+	background-color: #efefef;
+	position: fixed;
+	top: 10rem;
+	left: 0;
+	min-height: 14rem;
+	width: 100%;
+	z-index: 0;
+	max-width: 70vw;
+
+	h1 {
+		font-family: "Overpass Mono", monospace;
+		text-transform: uppercase;
+		text-align: center;
+		font-size: 1.5rem;
+	}
+
+	p {
+		word-break: break-all;
+	}
 }

@@ -1,7 +1,12 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { CanvasProps } from "../../types";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { CanvasProps } from "@types";
 import rough from "roughjs/bundled/rough.cjs";
+import _ from "lodash";
 
+/**
+ * @description Check if the event is a touch event or a mouse event
+ * @param e
+ */
 function isTouchEvent(e: React.TouchEvent | React.MouseEvent): e is React.TouchEvent {
 	return e && "touches" in e;
 }
@@ -13,6 +18,13 @@ function isMouseEvent(e: React.TouchEvent | React.MouseEvent): e is React.MouseE
 function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: CanvasProps) {
 	const [isDrawing, setIsDrawing] = useState(false);
 
+	const clearCanvasDebounced = useRef(_.debounce(clearCanvas, 5000));
+
+	/**
+	 * @description When the component mounts, set the canvas height and width to the window height and width
+	 * The canvas is scaled by 2 to ensure that the lines are smooth
+	 * Set also the line cap and line join to round
+	 */
 	useEffect(() => {
 		const canvas = canvasRef.current;
 
@@ -32,6 +44,9 @@ function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: 
 		ctx.current = context;
 	}, []);
 
+	/**
+	 * @description When the color changes, update the context color
+	 */
 	useEffect(() => {
 		ctx.current.strokeStyle = color;
 	}, [color]);
@@ -56,8 +71,6 @@ function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: 
 
 	const handleTouchStart = (e: React.TouchEvent) => {
 		if (isTouchEvent(e)) {
-			console.log(e.touches);
-
 			const clientX = e.touches[0].clientX;
 			const clientY = e.touches[0].clientY;
 
@@ -77,8 +90,6 @@ function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: 
 
 	const handleTouchMove = (e: React.TouchEvent) => {
 		if (isTouchEvent(e)) {
-			console.log(e.touches);
-
 			const clientX = e.touches[0].clientX;
 			const clientY = e.touches[0].clientY;
 
@@ -122,16 +133,11 @@ function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: 
 		}
 	};
 
-	const handleMouseUp = () => {
-		setIsDrawing(false);
-	};
-
-	const handleTouchEnd = () => {
+	const stopDrawing = () => {
 		setIsDrawing(false);
 	};
 
 	useLayoutEffect(() => {
-		const { userId } = user;
 		const roughCanvas = rough.canvas(canvasRef.current);
 
 		if (elements.length > 0) {
@@ -153,18 +159,38 @@ function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: 
 		 * @name drawing
 		 * @description Emits the drawing to the server with the user id
 		 */
-		socket.emit("drawing", canvasImage, userId);
+		if (elements.length > 0) {
+			socket.emit("drawing", canvasImage, user);
+		}
 	}, [elements]);
+
+	function clearCanvas() {
+		if (isDrawing) return;
+
+		ctx.current.clearRect(0, 0, canvasRef.current?.width, canvasRef.current?.height);
+
+		setElements((prevElements) => []);
+		socket.emit("drawing", null, user);
+	}
+
+	useEffect(() => {
+		/**
+		 * @description When the user stops drawing, emit the drawing to the server and delete the elements
+		 */
+		if (!isDrawing) {
+			clearCanvasDebounced.current();
+		}
+	}, [isDrawing]);
 
 	return (
 		<div
 			style={{ height: "100%" }}
 			onMouseMove={handleMouseMove}
 			onMouseDown={handleMouseDown}
-			onMouseUp={handleMouseUp}
 			onTouchMove={handleTouchMove}
 			onTouchStart={handleTouchStart}
-			onTouchEnd={handleTouchEnd}
+			onMouseUp={stopDrawing}
+			onTouchEnd={stopDrawing}
 		>
 			<canvas ref={canvasRef} />
 		</div>

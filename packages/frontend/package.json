@@ -15,14 +15,17 @@
   "author": "Salvatore Esposito <s.esposito@ideasolutions.it>",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-json-view": "^1.21.3",
     "roughjs": "^4.5.2",
     "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",
     "@types/react": "^18.0.28",
+    "@types/react-css-modules": "^4.6.4",
     "@types/react-dom": "^18.0.11",
     "@types/webpack": "^5.28.0",
     "@types/webpack-dev-server": "^4.7.2",
@@ -46,8 +49,7 @@
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "typescript": "^5.0.2",
-    "typescript-plugin-css-modules": "^4.2.3",
+    "typescript-plugin-css-modules": "^5.0.0",
     "webpack": "^5.76.2",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.1"

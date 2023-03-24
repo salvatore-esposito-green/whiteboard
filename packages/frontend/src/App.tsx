@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import Board from "@components/board/Board";
-import { ClientToServerEvents, ServerToClientEvents, User } from "./types";
+import { ClientToServerEvents, Element, ServerToClientEvents, User } from "./types";
 import ClientRoom from "@components/clientRoom/ClientRoom";
-import Debugger from "@components/debugger/Debugger";
 import { useScrollBlock } from "./hooks/useScrollBlock";
-import OnlineUsers from "@components/onlineUsers/OnlineUsers";
+import Form from "@components/form/Form";
 
-const server = "https://ideasolutions-server.eu.ngrok.io";
+const server = process.env["NGROK_SERVER"];
 const connectionOptions = {
 	forceNew: true,
 	reconnection: true,
@@ -18,50 +17,47 @@ const connectionOptions = {
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(server, connectionOptions);
 
 function App() {
-	const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<User | null>(JSON.parse(sessionStorage.getItem("user")));
+	const [elements, setElements] = useState<Element[] | []>([]);
+
 	const [blockScroll, allowScroll] = useScrollBlock();
 
-	const queryParams = new URLSearchParams(window.location.search);
-	const isPresenter = !queryParams.get("isPresenter");
-
+	/**
+	 * Block scroll when user is presenter or when user draws on mobile
+	 */
 	useEffect(() => {
 		blockScroll();
 	}, []);
 
+	/**
+	 * @name userJoined
+	 * @description When a user joins the room, add them to the online users list
+	 */
 	useEffect(() => {
 		if (user) {
 			socket.emit("userJoined", user);
 		}
 	}, [user]);
 
-	useEffect(() => {
-		setUser({
-			roomId: "roomId",
-			userId: uuid(),
-			username: "test",
-			host: true,
-			presenter: isPresenter || false,
-		});
-	}, []);
+	if (!user) {
+		return <Form />;
+	}
 
 	return (
 		<div className="home">
 			{user?.presenter ? (
-				<Board socket={socket} user={user} />
+				<Board
+					socket={socket}
+					user={user}
+					setUser={setUser}
+					elements={elements}
+					setElements={setElements}
+				/>
 			) : (
-				<>
-					<Debugger />
-					<ClientRoom user={user} socket={socket} />
-				</>
+				<ClientRoom socket={socket} elements={elements} />
 			)}
 		</div>
 	);
 }
 
 export default App;
-
-function uuid(): string {
-	const S4 = () => (1 + Math.random() * 0x10000).toString(16).substring(1);
-
-	return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
-}

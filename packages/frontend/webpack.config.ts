@@ -4,6 +4,7 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const Dotenv = require("dotenv-webpack");
 
 const isDevelopment = process.env.PRODUCTION !== "true";
 
@@ -99,6 +100,9 @@ const webpackConfig = (env): Configuration => ({
 		new MiniCssExtractPlugin({
 			filename: isDevelopment ? "[name].css" : "[name].[hash].css",
 			chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
+		}),
+		new Dotenv({
+			path: `./.env${env.file ? `.${env.file}` : ""}`,
 		}),
 	],
 });

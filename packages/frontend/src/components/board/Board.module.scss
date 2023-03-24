@@ -1,0 +1,25 @@
+.LogoutButton {
+	padding: 1rem;
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.5rem;
+	align-self: center;
+	background-color: orange;
+	color: black;
+	border: none;
+	width: 100%;
+	margin: 0 auto 1rem auto;
+	box-sizing: border-box;
+	max-width: 230px;
+	border-radius: 2rem 0;
+	box-shadow: 10px 5px 20px 0px #cccccc;
+	text-transform: uppercase;
+	font-family: "Amatic SC", cursive;
+	position: fixed;
+	bottom: 0;
+	right: calc(50vw - 125px);
+
+	&:hover {
+		box-shadow: 3px 3px 3px 0px #cccccc;
+	}
+}

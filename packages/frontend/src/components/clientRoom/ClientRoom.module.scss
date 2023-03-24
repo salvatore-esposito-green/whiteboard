@@ -6,10 +6,31 @@
 	position: fixed;
 	display: flex;
 	justify-content: center;
+	opacity: 70%;
 
 	img {
 		width: auto;
 		height: 100%;
 		align-self: center;
 	}
+}
+
+.h1 {
+	font-family: "Amatic SC", cursive;
+	text-align: left;
+	font-size: 6rem;
+	padding: 1rem;
+	margin: auto;
+	font-weight: normal;
+}
+
+.claim {
+	transform: translateX(-50%) translateY(-50%) rotate(270deg);
+	font-size: 3rem;
+	color: black;
+	text-align: center;
+	position: fixed;
+	top: 50vh;
+	left: 3rem;
+	font-family: "Amatic SC", cursive;
 }
