@@ -12,4 +12,6 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 
+# Environment variables
 packages/server/.env
+packages/frontend/.env

@@ -3,27 +3,14 @@ import { User } from "./types";
 const users: User[] = [];
 
 // Join user to chat
-const userJoin = (
-	id: string,
-	username: string,
-	room: string,
-	host: boolean,
-	presenter: boolean,
-) => {
-	const user = {
-		roomId: room,
-		userId: id,
-		username,
-		host,
-		presenter,
-	};
-
+const userJoin = (user: User) => {
 	users.push(user);
 	return user;
 };
+
 // User leaves chat
-const userLeave = (id: string): User | undefined => {
-	const index = users.findIndex((user) => user.userId === id);
+const userLeave = (socketId: string): User | undefined => {
+	const index = users.findIndex((user) => user.id === socketId);
 
 	if (index !== -1) {
 		return users.splice(index, 1)[0];
@@ -45,8 +32,13 @@ const getUsers = (room: string): User[] => {
 	return RoomUsers;
 };
 
+const getUser = (userId: string): User => {
+	return users.find((user) => user.userId === userId);
+};
+
 module.exports = {
 	userJoin,
 	userLeave,
 	getUsers,
+	getUser,
 };
