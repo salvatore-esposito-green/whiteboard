@@ -16,4 +16,5 @@ dist-ssr
 packages/server/.env
 packages/frontend/.env
 whiteboard/packages/frontend/ngrok.yml
+git rm --cached .env
 .env
