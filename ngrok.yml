@@ -1,0 +1,11 @@
+version: 2
+region: eu
+tunnels:
+  webapp:
+    proto: http
+    hostname: ideasolutions.eu.ngrok.io
+    addr: 8080
+  server:
+    proto: http
+    hostname: server-ideasolutions.eu.ngrok.io
+    addr: 5003

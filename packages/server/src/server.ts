@@ -34,7 +34,7 @@ app.use((req: Request, res: Response, next) => {
 });
 
 app.get("/", (req: Request, res: Response) => {
-	res.send("server");
+	res.send("Express + TypeScript Server is running.");
 });
 
 let imageUrl: string;
@@ -51,12 +51,37 @@ let userRoom: string;
  * @see https://socket.io/docs/v4/index.html
  */
 io.on("connection", (socket) => {
+	socket.broadcast.emit("log", {
+		message: `EventName: connection - Success: true ${socket.id}`,
+		data: Date.now(),
+	});
+
 	socket.on("userJoined", (data) => {
 		const { roomId, username, host, presenter, userId } = data;
 
-		const user = userJoin({ id: socket.id, userId, username, roomId, host, presenter });
-
 		const roomUsers = getUsers("roomId");
+
+		// if userName is already taken, return
+		const isUserNameExist = roomUsers.find(
+			(user) => user.username.toLowerCase() === username.toLowerCase().trim(),
+		);
+
+		if (isUserNameExist) {
+			socket.broadcast.emit("log", {
+				message: `EventName: userJoined - Success: false - Payload: Username già esistente (${username})`,
+				data: Date.now(),
+			});
+
+			socket.emit("responseJoined", {
+				success: false,
+				data: null,
+				message: "Username già esistente",
+			});
+
+			return;
+		}
+
+		const user = userJoin({ id: socket.id, userId, username, roomId, host, presenter });
 
 		socket.join(user.roomId);
 
@@ -68,11 +93,10 @@ io.on("connection", (socket) => {
 			message: `⚡️**${user.username}** Si è unito alla stanza`,
 		});
 
-		socket.broadcast.emit("users", roomUsers);
-
-		socket.broadcast.emit("log", {
-			message: `EventName: userJoined - Payload: ${JSON.stringify(data)}`,
-			data: Date.now(),
+		socket.emit("responseJoined", {
+			success: true,
+			data: user,
+			message: "",
 		});
 	});
 
@@ -88,7 +112,9 @@ io.on("connection", (socket) => {
 		socket.broadcast.emit("canvasImage", imageUrl, userId);
 
 		socket.broadcast.emit("log", {
-			message: `EventName: canvasImage - Payload: ${JSON.stringify(imageUrl)}`,
+			message: `EventName: canvasImage - UserId: ${userId} - Payload: ${JSON.stringify(
+				imageUrl,
+			).slice(0, 100)}`,
 			data: Date.now(),
 		});
 
@@ -122,6 +148,15 @@ io.on("connection", (socket) => {
 		socket.broadcast.emit("message", {
 			message: `✏️ **${username}** Sta disegnando...`,
 		});
+
+		const roomUsers = getUsers("roomId");
+
+		socket.broadcast.emit("users", roomUsers);
+
+		socket.broadcast.emit("log", {
+			message: `EventName: refreshData - Users: ${JSON.stringify(roomUsers)}`,
+			data: Date.now(),
+		});
 	});
 
 	socket.on("disconnect", () => {
@@ -133,6 +168,11 @@ io.on("connection", (socket) => {
 				message: `🚪 **${userLeaves.username}** Ha lasciato la stanza`,
 			});
 			socket.broadcast.emit("users", roomUsers);
+
+			socket.broadcast.emit("log", {
+				message: `EventName: disconnect - Username: ${userLeaves.username}`,
+				data: Date.now(),
+			});
 		}
 	});
 
@@ -147,8 +187,25 @@ io.on("connection", (socket) => {
 			socket.broadcast.emit("message", {
 				message: `🚪 **${userLeaves.username}** Ha lasciato la stanza`,
 			});
+
 			socket.broadcast.emit("users", roomUsers);
+
+			socket.broadcast.emit("log", {
+				message: `EventName: logout - Username: ${userLeaves.username}`,
+				data: Date.now(),
+			});
 		}
+	});
+
+	socket.on("refreshData", () => {
+		const roomUsers = getUsers("roomId");
+
+		socket.broadcast.emit("users", roomUsers);
+
+		socket.broadcast.emit("log", {
+			message: `EventName: refreshData - Users: ${JSON.stringify(roomUsers)}`,
+			data: Date.now(),
+		});
 	});
 });
 

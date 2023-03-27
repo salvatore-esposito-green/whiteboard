@@ -7,6 +7,11 @@
 	box-sizing: border-box;
 	font-family: "Overpass Mono", monospace;
 
+	p {
+		font-size: 0.75rem;
+		margin: 0 0 0.3rem 0;
+	}
+
 	h3 {
 		font-weight: bold;
 	}
@@ -33,14 +38,15 @@
 }
 
 .Logger {
-	background-color: #efefef;
+	background-color: #efefef7a;
 	position: fixed;
 	top: 10rem;
 	left: 0;
-	min-height: 14rem;
 	width: 100%;
-	z-index: 0;
 	max-width: 70vw;
+	max-height: 15vh;
+	overflow-y: scroll;
+	z-index: 9999;
 
 	h1 {
 		font-family: "Overpass Mono", monospace;

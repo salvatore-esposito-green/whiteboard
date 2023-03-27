@@ -1,35 +1,60 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Form.module.scss";
+import { useSocket, useUser } from "../../AppContext";
 
 const Form: React.FC = () => {
 	const queryParams = new URLSearchParams(window.location.search);
 	const isPresenter = !queryParams.get("isPresenter");
 
+	const { setUser } = useUser();
+	const socket = useSocket();
+
 	const [username, setUsername] = useState<string>("");
+	const [error, setError] = useState<string>("");
 
 	const handleChangeUsername = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		setUsername(e.target.value);
 	};
 
-	const handleSubmitForm = useCallback(() => {
-		if (username.trim() === "") return;
+	const handleSubmitForm = useCallback(
+		(e) => {
+			e.preventDefault();
 
-		/**
-		 * TODO: In the future, we will need to handle the case where a user joins the specific room
-		 */
-		const user = {
-			roomId: "roomId",
-			userId: uuid(),
-			username: username,
-			host: true,
-			presenter: isPresenter || false,
-		};
+			setError("");
+			if (username.trim() === "") return;
 
-		sessionStorage.setItem("user", JSON.stringify(user));
-	}, [username, isPresenter]);
+			/**
+			 * TODO: In the future, we will need to handle the case where a user joins the specific room
+			 */
+			const user = {
+				roomId: "roomId",
+				userId: uuid(),
+				username: username.trim(),
+				host: true,
+				presenter: isPresenter || false,
+			};
+
+			/**
+			 * @name userJoined
+			 * @description When a user joins the room, add them to the online users list
+			 */
+			socket?.emit("userJoined", user);
+		},
+		[socket, username, isPresenter],
+	);
+
+	useEffect(() => {
+		socket?.on("responseJoined", (response) => {
+			if (response.success) {
+				setUser(response.data);
+			} else {
+				setError(response.message);
+			}
+		});
+	}, [socket, setUser, setError]);
 
 	return (
-		<form className={styles.form} onSubmit={() => handleSubmitForm()}>
+		<form className={styles.form} onSubmit={(e) => handleSubmitForm(e)}>
 			<h1>Inserisci il tuo username</h1>
 			<input
 				type="text"
@@ -38,6 +63,7 @@ const Form: React.FC = () => {
 				onChange={handleChangeUsername}
 			/>
 			<button type={"submit"}>Invia</button>
+			{error ? <span className={styles.error}>{error}</span> : null}
 		</form>
 	);
 };

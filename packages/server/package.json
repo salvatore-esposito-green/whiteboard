@@ -4,9 +4,11 @@
 	"description": "this is the backend for mern realtime white board sharing app",
 	"main": "src/server.ts",
 	"scripts": {
-		"build": "npx tsc",
-		"start": "node lib/index.js",
-		"dev": "concurrently \"npx tsc --watch\" \"nodemon -q lib/index.js\""
+		"build": "rm -rf lib/ && npx tsc",
+		"start": "node --inspect lib/index.js --port=$PORT",
+		"start:dev": "concurrently \"npx tsc --watch\" \"nodemon -q --inspect lib/index.js --port=$PORT\"",
+		"dev": "env-cmd -f ../../.env --use-shell \"npm run start:dev\"",
+		"prod": "env-cmd -f ../../.env --use-shell \"npm run start\""
 	},
 	"keywords": [
 		"sharing",

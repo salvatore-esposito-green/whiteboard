@@ -1,50 +1,44 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./ClientRoom.module.scss";
-import { ClientRoomProps, Toast, User } from "@types";
-import OnlineUsers from "@components/debugger/onlineUsers/OnlineUsers";
 import ToastComponent from "@components/toast/Toast";
 import Debugger from "@components/debugger/Debugger";
+import { useSocket, useToast } from "../../AppContext";
 
-const ClientRoom = ({ socket, elements }: ClientRoomProps) => {
-	const [userNo, setUserNo] = useState(0);
-	const [users, setUsers] = useState<User[]>([]);
+const ClientRoom = () => {
 	const [imageArr, setImageArr] = useState([]);
-	const [toast, setToast] = useState<Toast[]>([]);
+
+	const socket = useSocket();
 
 	const containerImages = useRef(null);
-
-	useEffect(() => {
-		socket.on("message", (data) => {
-			const date = Date.now();
-			setToast((toast) => [...toast, { message: data.message, date }]);
-		});
-	}, []);
-
-	useEffect(() => {
-		socket.on("users", (data) => {
-			setUsers(data);
-			setUserNo(data.length);
-		});
-	}, []);
 
 	useEffect(() => {
 		/**
 		 * @description When the server sends a canvas image, update the imageArr[]
 		 */
-		socket.on("canvasImage", (data, userId) => {
+		socket?.on("canvasImage", (data, userId) => {
 			if (userId) {
 				// Set imageArr to include the new image with userId as key
 				setImageArr((imageArr) => ({ ...imageArr, [userId]: data }));
 			}
 		});
-	}, []);
+	}, [socket]);
+
+	useEffect(() => {
+		socket?.emit("refreshData");
+	}, [socket]);
+
+	const handleFilterClick = (userId: string) => {};
 
 	const imagesHtml = useCallback(() => {
 		return Object.keys(imageArr).map((userId, index) => {
 			if (!imageArr[userId]) return;
 
 			return (
-				<div key={userId.toString()} className={styles.client__image}>
+				<div
+					key={userId.toString()}
+					className={styles.client__image}
+					onClick={() => handleFilterClick(userId)}
+				>
 					<img src={imageArr[userId]} alt={userId} />
 				</div>
 			);
@@ -63,10 +57,10 @@ const ClientRoom = ({ socket, elements }: ClientRoomProps) => {
 			<h1 className={styles.h1}>@whiteboard app</h1>
 			<span className={styles.claim}>🖋️ let's draw together</span>
 
-			<Debugger elements={elements} users={users} toast={toast} userNo={userNo} socket={socket} />
-			{toast.length > 0 ? <ToastComponent toast={toast} setToast={setToast} /> : null}
+			<Debugger />
+			<ToastComponent />
 
-			{containerImages.current}
+			<div className={"container-images"}>{containerImages.current}</div>
 		</>
 	);
 };

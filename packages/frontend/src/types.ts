@@ -7,12 +7,14 @@ export interface ServerToClientEvents {
 	log: (data: { message: string; data: number }) => void;
 	users: (data: User[]) => void;
 	canvasImage: (imageUrl: string, userId: string) => void;
+	responseJoined: (data: { success: boolean; message: string; data: User }) => void;
 }
 
 export interface ClientToServerEvents {
 	userJoined: (user: User) => void;
 	drawing: (canvasImage: string, user: User) => void;
 	logout: (id: string) => void;
+	refreshData: () => void;
 }
 
 export interface User {
@@ -21,24 +23,6 @@ export interface User {
 	username: string;
 	host: boolean;
 	presenter: boolean;
-}
-
-export interface BoardProps {
-	socket: Socket<ServerToClientEvents, ClientToServerEvents>;
-
-	user: User;
-
-	setUser(user: User): void;
-
-	elements: Element[];
-
-	setElements(elements: (prevElements: Element[]) => Element[]): void;
-}
-
-export interface ClientRoomProps {
-	socket: Socket<ServerToClientEvents, ClientToServerEvents>;
-
-	elements: Element[];
 }
 
 export type Element = {
@@ -53,10 +37,6 @@ export interface CanvasProps {
 	canvasRef: MutableRefObject<HTMLCanvasElement | null>;
 	ctx: MutableRefObject<CanvasRenderingContext2D>;
 	color: string;
-	setElements(elements: (prevElements: Element[]) => Element[]): void;
-	elements: Element[];
-	socket: Socket<ServerToClientEvents, ClientToServerEvents>;
-	user: User;
 }
 
 export interface Toast {
@@ -64,21 +44,21 @@ export interface Toast {
 	date: number;
 }
 
-export interface StateDebuggerViewProps {
-	elements: Element[];
-	users: User[];
-	toast: Toast[];
-}
-
 export interface Log {
 	message: string;
 	data: number;
 }
 
-export interface DebuggerProps {
-	elements: Element[];
+export interface AppContextType {
 	users: User[];
+	setUsers(users: User[]): void;
+	user: User;
+	setUser(user: User): void;
+	elements: Element[];
+	setElements(elements: Element[]): void;
 	toast: Toast[];
+	setToast(toast: Toast[]): void;
 	socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 	userNo: number;
+	setUserNo(userNo: number): void;
 }

@@ -33,4 +33,10 @@
 	top: 50vh;
 	left: 3rem;
 	font-family: "Amatic SC", cursive;
+	z-index: 10000;
+}
+
+body {
+	padding: 0;
+	margin: 0;
 }

@@ -1,30 +1,53 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import styles from "./Toast.module.scss";
-import { Toast } from "@types";
+import { useSocket, useToast } from "../../AppContext";
 
-const DELAY = 5000;
+const DELAY = 1000;
 
-function ToastComponent({
-	toast,
-	setToast,
-}: {
-	toast: Toast[];
-	setToast: React.Dispatch<React.SetStateAction<Toast[]>>;
-}) {
-	const renderToasts = () => {
-		return toast.map((toast, index) => {
+function ToastComponent() {
+	const socket = useSocket();
+	const { toast, setToast } = useToast();
+
+	const toastHTML = useRef([]);
+
+	useEffect(() => {
+		socket?.on("message", (data) => {
+			const date = Date.now();
+			setToast((toast) => [...toast, { message: data.message, date }]);
+		});
+	}, [socket]);
+
+	const filterToasts = useCallback(() => {
+		toast.forEach((toast, index) => {
 			if (Date.now() - toast.date > DELAY) {
 				setToast((toast) => toast.filter((_, i) => i !== index));
-				return;
 			}
-
-			return (
-				<p key={index} dangerouslySetInnerHTML={{ __html: parseBoaldString(toast.message) }} />
-			);
 		});
-	};
+	}, [toast]);
 
-	return <div className={styles.Toast}>{renderToasts()}</div>;
+	const renderToasts = useCallback(() => {
+		toastHTML.current = toast
+			.reverse()
+			.filter((_, i) => i < 5)
+			.map((toast, index) => {
+				return (
+					<div key={index} className={styles.Toast}>
+						<p dangerouslySetInnerHTML={{ __html: parseBoaldString(toast.message) }} />
+					</div>
+				);
+			});
+	}, [toast]);
+
+	useEffect(() => {
+		filterToasts();
+		renderToasts();
+	}, [toast]);
+
+	if (toast.length < 1) {
+		return null;
+	}
+
+	return <div className={styles.ContainerToast}>{toastHTML.current}</div>;
 }
 
 export default ToastComponent;

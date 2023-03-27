@@ -1,8 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { User } from "@types";
 import styles from "./OnlineUsers.module.scss";
+import { useUserNo, useUsers } from "src/AppContext";
 
-const OnlineUsers: React.FC<{ users: User[]; userNo: number }> = ({ users, userNo }) => {
+const OnlineUsers: React.FC = () => {
+	const { users } = useUsers();
+	const { userNo } = useUserNo();
+
 	const listRef = useRef<HTMLUListElement | null>(null);
 
 	useEffect(() => {

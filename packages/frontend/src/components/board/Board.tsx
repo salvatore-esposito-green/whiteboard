@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import Canvas from "@components/canvas/Canvas";
-import { BoardProps } from "@types";
 import styles from "./Board.module.scss";
+import { useSocket, useUser } from "../../AppContext";
 
-function Board({ socket, user, setUser, elements, setElements }: BoardProps) {
+function Board() {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const ctx = useRef<CanvasRenderingContext2D | null>(null);
+
+	const { setUser } = useUser();
+	const socket = useSocket();
 
 	const [color, setRandomColor] = useState<string>("#000000");
 
@@ -22,7 +25,7 @@ function Board({ socket, user, setUser, elements, setElements }: BoardProps) {
 
 		sessionStorage.clear();
 		setUser(null);
-		socket.emit("logout", userId);
+		socket?.emit("logout", userId);
 	};
 
 	return (
@@ -33,15 +36,7 @@ function Board({ socket, user, setUser, elements, setElements }: BoardProps) {
 				value={"Logout"}
 				onClick={() => handleLogout()}
 			/>
-			<Canvas
-				socket={socket}
-				canvasRef={canvasRef}
-				ctx={ctx}
-				color={color}
-				setElements={setElements}
-				elements={elements}
-				user={user}
-			/>
+			<Canvas canvasRef={canvasRef} ctx={ctx} color={color} />
 		</>
 	);
 }

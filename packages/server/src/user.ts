@@ -33,7 +33,11 @@ const getUsers = (room: string): User[] => {
 };
 
 const getUser = (userId: string): User => {
-	return users.find((user) => user.userId === userId);
+	const user = users.find((user) => user.userId === userId);
+	if (!user) {
+		return undefined;
+	}
+	return user;
 };
 
 module.exports = {

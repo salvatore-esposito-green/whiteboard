@@ -1,14 +1,13 @@
 import styles from "./Debugger.module.scss";
 import React from "react";
 import StateDebuggerView from "@components/debugger/stateView/StateDebuggerView";
-import { DebuggerProps } from "@types";
 import OnlineUsers from "@components/debugger/onlineUsers/OnlineUsers";
 import Logger from "@components/debugger/logger/Logger";
 
-function Debugger({ elements, users, toast, userNo, socket }: DebuggerProps) {
+function Debugger() {
 	return (
 		<>
-			<Logger socket={socket} />
+			<Logger />
 			<div className={styles.Container}>
 				<div className={styles.home__header}>
 					<h3>Environmental variables:</h3>
@@ -21,9 +20,18 @@ function Debugger({ elements, users, toast, userNo, socket }: DebuggerProps) {
 					<p>
 						process.env.VERSION: <b>{process.env.VERSION}</b>
 					</p>
+					<p>
+						process.env.NGROK_AUTHTOKEN: <b>{process.env.NGROK_AUTHTOKEN}</b>
+					</p>
+					<p>
+						process.env.PORT: <b>{process.env.PORT}</b>
+					</p>
+					<p>
+						process.env.NGROK_HOSTNAME: <b>{process.env.NGROK_HOSTNAME}</b>
+					</p>
 				</div>
-				<StateDebuggerView elements={elements} users={users} toast={toast} />
-				<OnlineUsers users={users} userNo={userNo} />
+				<StateDebuggerView />
+				<OnlineUsers />
 			</div>
 		</>
 	);

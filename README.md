@@ -25,7 +25,7 @@
 Once all dependencies are installed, proceed to launch the apps:
 
 ```sh
-$ yarn install
+$ yarn install 
 ```
 
 ### ./packages/server
@@ -37,7 +37,7 @@ $ yarn run dev
 ### ./packages/frontend
 
 ```sh
-$ yarn run start:dev
+$ PORT=9999 yarn run start:dev
 $ yarn run ngrok
 ```
 
@@ -161,3 +161,7 @@ socket.broadcast.emit("canvasImage", imageUrl, userId);
 // brodcast to single room id
 socket.broadcast.to(user.roomId).emit("canvasImage", imageUrl, userId);
 ```
+
+# Todos
+
+- [ ] Fix typescript scss module

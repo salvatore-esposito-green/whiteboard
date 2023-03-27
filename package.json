@@ -1,16 +1,22 @@
 {
-  "name": "whiteboard",
-  "description": "",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "keywords": [],
-  "scripts": {},
-  "author": "Salvatore Esposito <s.esposito@ideasolutions.it>",
-  "license": "MIT",
-  "devDependencies": {
-    "dotenv-webpack": "^8.0.1",
-    "typescript": "^4.9.5"
-  }
+	"name": "whiteboard",
+	"description": "",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"keywords": [],
+	"scripts": {
+		"kill": "kill -9 $(ps -ef | grep 'ngrok' | grep -v 'grep' | awk '{print $2}')",
+		"ngrok": "ngrok start --config ./ngrok.yml --authtoken $NGROK_AUTHTOKEN webapp server",
+		"dev": "env-cmd -f ./.env --use-shell \"npm run ngrok\""
+	},
+	"author": "Salvatore Esposito <s.esposito@ideasolutions.it>",
+	"license": "MIT",
+	"devDependencies": {
+		"dotenv-webpack": "^8.0.1",
+		"env-cmd": "^10.1.0",
+		"typescript": "^4.9.5"
+	},
+	"dependencies": {}
 }

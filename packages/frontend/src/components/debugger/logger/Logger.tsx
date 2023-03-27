@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from "react";
 import styles from "../Debugger.module.scss";
-import { Socket } from "socket.io-client";
-import { ClientToServerEvents, Log, ServerToClientEvents } from "@types";
+import { Log } from "@types";
+import { useSocket } from "../../../AppContext";
 
-function Logger({ socket }: { socket: Socket<ServerToClientEvents, ClientToServerEvents> }) {
+function Logger() {
+	const socket = useSocket();
+
 	const [log, setLog] = useState<Log[]>([]);
 
 	useEffect(() => {
-		socket.on("log", (data) => {
+		socket?.on("log", (data) => {
 			setLog((log) => [...log, data]);
 		});
-	}, []);
+	}, [socket]);
 
 	return (
 		<div className={styles.Logger}>
 			<h1>Logger</h1>
-			{log.map((log, index) => {
+			{log.reverse().map((log, index) => {
+				if (Date.now() - log.data > 1000 * 30) return null;
+
 				const time = convertDate(log.data);
 
 				return (
-					<div key={log.data}>
+					<div key={index}>
 						<p>
 							{JSON.stringify(log.message, null, 2)} | <b>{time}</b>
 						</p>

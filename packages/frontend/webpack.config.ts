@@ -102,7 +102,7 @@ const webpackConfig = (env): Configuration => ({
 			chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
 		}),
 		new Dotenv({
-			path: `./.env${env.file ? `.${env.file}` : ""}`,
+			path: `../../.env${env.file ? `.${env.file}` : ""}`,
 		}),
 	],
 });

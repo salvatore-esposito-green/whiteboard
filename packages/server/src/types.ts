@@ -3,12 +3,14 @@ export interface ServerToClientEvents {
 	log: (data: { message: string; data: number }) => void;
 	users: (data: User[]) => void;
 	canvasImage: (imageUrl: string, userId: string) => void;
+	responseJoined: (data: { success: boolean; message: string; data: User }) => void;
 }
 
 export interface ClientToServerEvents {
 	userJoined: (user: User) => void;
 	drawing: (canvasImage: string, user: User) => void;
 	logout: (id: string) => void;
+	refreshData: () => void;
 }
 
 export interface InterServerEvents {}

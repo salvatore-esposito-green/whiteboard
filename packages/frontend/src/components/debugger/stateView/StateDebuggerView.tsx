@@ -1,11 +1,17 @@
 import React from "react";
 import ReactJson from "react-json-view";
-import { StateDebuggerViewProps } from "@types";
 import styles from "../Debugger.module.scss";
+import { useElements, useToast, useUsers } from "../../../AppContext";
 
-function StateDebuggerView({ toast, elements, users }: StateDebuggerViewProps) {
+function StateDebuggerView() {
+	const { elements } = useElements();
+	const { users } = useUsers();
+	const { toast } = useToast();
+
 	return (
 		<div className={styles.State}>
+			<h3 style={{ color: "white" }}>State:</h3>
+
 			<ReactJson
 				collapsed={true}
 				src={{ toast, elements, users }}

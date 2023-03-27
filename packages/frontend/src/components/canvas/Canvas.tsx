@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { CanvasProps } from "@types";
 import rough from "roughjs/bundled/rough.cjs";
 import _ from "lodash";
+import { useElements, useSocket, useUser } from "../../AppContext";
 
 /**
  * @description Check if the event is a touch event or a mouse event
@@ -15,7 +16,11 @@ function isMouseEvent(e: React.TouchEvent | React.MouseEvent): e is React.MouseE
 	return e && "screenX" in e;
 }
 
-function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: CanvasProps) {
+function Canvas({ canvasRef, ctx, color }: CanvasProps) {
+	const { user } = useUser();
+	const { elements, setElements } = useElements();
+	const socket = useSocket();
+
 	const [isDrawing, setIsDrawing] = useState(false);
 
 	const clearCanvasDebounced = useRef(_.debounce(clearCanvas, 5000));
@@ -160,7 +165,7 @@ function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: 
 		 * @description Emits the drawing to the server with the user id
 		 */
 		if (elements.length > 0) {
-			socket.emit("drawing", canvasImage, user);
+			socket?.emit("drawing", canvasImage, user);
 		}
 	}, [elements]);
 
@@ -170,7 +175,7 @@ function Canvas({ canvasRef, ctx, color, setElements, elements, socket, user }: 
 		ctx.current.clearRect(0, 0, canvasRef.current?.width, canvasRef.current?.height);
 
 		setElements((prevElements) => []);
-		socket.emit("drawing", null, user);
+		socket?.emit("drawing", null, user);
 	}
 
 	useEffect(() => {
