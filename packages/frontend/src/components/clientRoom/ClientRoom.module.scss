@@ -15,6 +15,14 @@
 	}
 }
 
+.selected {
+	display: block;
+}
+
+.unselected {
+	display: none;
+}
+
 .h1 {
 	font-family: "Amatic SC", cursive;
 	text-align: left;

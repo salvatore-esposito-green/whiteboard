@@ -9,7 +9,9 @@
 	"scripts": {
 		"kill": "kill -9 $(ps -ef | grep 'ngrok' | grep -v 'grep' | awk '{print $2}')",
 		"ngrok": "ngrok start --config ./ngrok.yml --authtoken $NGROK_AUTHTOKEN webapp server",
-		"dev": "env-cmd -f ./.env --use-shell \"npm run ngrok\""
+		"dev": "env-cmd -f ./.env --use-shell \"concurrently --names 'SERVER,CLIENT,NGROK' -c 'bgRed.bold,bgYellow.bold,bgBlue.bold' 'npm run server' 'npm run client' 'npm run ngrok'\"",
+		"client": "npm run start:dev --prefix packages/frontend </dev/null &",
+		"server": "npm run dev --prefix packages/server </dev/null &"
 	},
 	"author": "Salvatore Esposito <s.esposito@ideasolutions.it>",
 	"license": "MIT",

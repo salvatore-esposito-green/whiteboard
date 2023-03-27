@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./ClientRoom.module.scss";
 import ToastComponent from "@components/toast/Toast";
 import Debugger from "@components/debugger/Debugger";
-import { useSocket, useToast } from "../../AppContext";
+import { useSocket } from "../../AppContext";
 
 const ClientRoom = () => {
 	const [imageArr, setImageArr] = useState([]);
+	const [selectedUser, setSelectedUser] = useState(null);
 
 	const socket = useSocket();
 
@@ -27,37 +28,39 @@ const ClientRoom = () => {
 		socket?.emit("refreshData");
 	}, [socket]);
 
-	const handleFilterClick = (userId: string) => {};
+	const imagesHtml = useCallback(
+		(selectedUser) => {
+			return Object.keys(imageArr).map((userId, index) => {
+				if (!imageArr[userId]) return;
 
-	const imagesHtml = useCallback(() => {
-		return Object.keys(imageArr).map((userId, index) => {
-			if (!imageArr[userId]) return;
-
-			return (
-				<div
-					key={userId.toString()}
-					className={styles.client__image}
-					onClick={() => handleFilterClick(userId)}
-				>
-					<img src={imageArr[userId]} alt={userId} />
-				</div>
-			);
-		});
-	}, [imageArr]);
+				return (
+					<div
+						key={userId.toString()}
+						className={`${styles.client__image} ${
+							selectedUser ? (selectedUser === userId ? styles.selected : styles.unselected) : ""
+						}`}
+					>
+						<img src={imageArr[userId]} alt={userId} />
+					</div>
+				);
+			});
+		},
+		[imageArr, selectedUser],
+	);
 
 	useEffect(() => {
-		containerImages.current = imagesHtml();
+		containerImages.current = imagesHtml(selectedUser);
 		return () => {
 			cancelAnimationFrame(containerImages.current);
 		};
-	}, [imageArr]);
+	}, [imageArr, selectedUser]);
 
 	return (
 		<>
 			<h1 className={styles.h1}>@whiteboard app</h1>
 			<span className={styles.claim}>🖋️ let's draw together</span>
 
-			<Debugger />
+			<Debugger setSelectedUser={setSelectedUser} />
 			<ToastComponent />
 
 			<div className={"container-images"}>{containerImages.current}</div>

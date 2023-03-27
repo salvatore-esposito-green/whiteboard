@@ -4,7 +4,7 @@ import StateDebuggerView from "@components/debugger/stateView/StateDebuggerView"
 import OnlineUsers from "@components/debugger/onlineUsers/OnlineUsers";
 import Logger from "@components/debugger/logger/Logger";
 
-function Debugger() {
+function Debugger({ setSelectedUser }) {
 	return (
 		<>
 			<Logger />
@@ -31,7 +31,7 @@ function Debugger() {
 					</p>
 				</div>
 				<StateDebuggerView />
-				<OnlineUsers />
+				<OnlineUsers setSelectedUser={setSelectedUser} />
 			</div>
 		</>
 	);
